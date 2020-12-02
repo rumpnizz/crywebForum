@@ -1,0 +1,42 @@
+﻿@model cryWeb.Models.Thread
+
+@{
+    ViewBag.Title = "ThreadDetails";
+    ViewBag.ThreadName = Model.Title;
+}
+
+<div class="thread-detail">
+    <div class="header">
+        <h2>@Model.Title</h2>
+    </div> 
+    @foreach (var post in Model.Posts)
+    { 
+        <div>
+            <div>
+                User
+            </div>
+            <div>
+                <div class="forum-post cf">
+                    @post.Text
+                    <div style="float: right">
+                        @Html.ActionLink("X", "DeletePost", new { ThreadId = Model.Id, id = post.Id })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div>
+        <div></div>
+        <div>
+            @using (Html.BeginForm("CreatePost", "Home", FormMethod.Post))
+            {
+                <div>
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.TextArea("postText")
+                </div>
+                <input type="submit" value="Skicka" />
+            }
+        </div>
+    </div>
+       
+</div>

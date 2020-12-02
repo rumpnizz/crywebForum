@@ -1,0 +1,108 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cryWeb</title>
+    @Styles.Render("~/bundles/bootstrap/css")
+    @Styles.Render("~/bundles/css/style")
+    @Scripts.Render("~/bundles/js/jquery")
+    @Scripts.Render("~/bundles/js/bootstrap")
+    @RenderSection("Scripts", false)
+</head>
+<body>
+    <div class="modal fade" id="logonModal" tabindex="-1" role="dialog" aria-labelledby="logonModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="logonModalLabel">Logga in</h4>
+                </div>
+                @using (Html.BeginForm("LogOn", "Account", FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <div>Username:</div>
+                        <div>@Html.TextBox("Username")</div>
+
+                        <div>Password:</div>
+                        <div>@Html.Password("Password")</div>
+                        @Html.Hidden("url", Request.Url.AbsoluteUri)
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Register</button>
+                        <input type="submit" class="btn btn-primary" value="Logga in" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="container cf">
+        <header>
+            <a href="@Url.Action("Index")">
+                <img id="logo" src="@Url.Content("~/Content/Images/logo.png")" />
+                <span>forums</span>
+            </a>
+            <nav class="cf">
+                <ul>
+                    <li>
+                        @Html.ActionLink("Hem", "Index", "Home", null, null)
+                    </li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#logonModal">Logga in</a>
+                        </li>
+                    }
+                    else {
+                        <li>Välkommen @User.Identity.Name!</li>   
+                    }
+                </ul>
+            </nav>
+        </header>
+        <section id="breadcrumb">
+            <ul class="cf">
+                <li>
+                    @Html.ActionLink("Hem", "Index", "Home", null, null)
+                </li>
+                @if (ViewBag.Breadcrumbs != null)
+                {
+                    var breadcrumbs = (Dictionary<int, string>)ViewBag.Breadcrumbs;
+                    
+                    for (var i = 0; i < breadcrumbs.Count; i++)
+                    {
+                        var crumb = breadcrumbs.ElementAt(i);
+
+                        if (ViewBag.ThreadName == null && i == (breadcrumbs.Count - 1))
+                        {
+                            <li>
+                                @crumb.Value
+                            </li>
+                        }
+                        else {
+                            <li>
+                                @Html.ActionLink(crumb.Value, "CategoryDetails", "Home", new { id = crumb.Key }, null)
+                            </li>
+                        }
+                    }
+
+                    if (ViewBag.ThreadName != null)
+                    {
+                        <li>@ViewBag.ThreadName</li>
+                    }
+                }
+            </ul>
+        </section>
+        <section id="content">
+            @RenderBody()
+        </section>
+        <footer>
+            Cryweb - Makkan Inc
+        </footer>
+    </div>
+</body>
+</html>

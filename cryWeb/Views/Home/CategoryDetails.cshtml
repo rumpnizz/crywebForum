@@ -1,0 +1,57 @@
+﻿@model cryWeb.Models.Category
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+    <div class="forum-group">
+        <div class="header">
+            @Model.Name
+        </div>
+        @foreach (var child in Model.Children)
+        {
+            <div class="group cf">
+                <div>
+                    <div class="title">
+                        @Html.ActionLink(child.Name, "CategoryDetails", new { id = child.Id })
+                    </div>
+                    <div>
+                        <span>@child.Children.Count() ämnen</span>
+                        <span>@child.Threads.Count() inlägg</span>
+                    </div>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        }
+        @foreach (var thread in Model.Threads)
+        {
+            <div class="thread">
+                <div class="title">
+                    @Html.ActionLink(thread.Title, "ThreadDetails", new { id = thread.Id })
+                    @thread.Created
+
+                    <div style="float: right">@Html.ActionLink("X", "DeleteThread", "Home", new { id = thread.Id, parentId = Model.Id }, null)</div>
+                </div>
+                <div>
+                    <span>@thread.Posts.Count() poster</span>
+                </div>
+            </div>
+        }
+        <div class="thread">
+            @Html.ActionLink("Skapa tråd", "CreateThread", "Home", new { id = Model.Id }, null)
+        </div>
+    </div>
+
+@section Scripts {
+    
+    <script src="@Url.Content("~/Scripts/slideAnimation.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Slider.go('.forum-group');
+        });
+    </script>
+
+
+}
